@@ -7,6 +7,21 @@ import ShareButton from "../components/ShareButton";
 
 const INITIAL_MONEY = 1500000;
 
+// 案件タイプの設定（業界相場に基づく）
+const PROJECT_TYPES = [
+  { name: "地方公共団体・保守運用", min: 400000, max: 600000, color: "#94a3b8", rank: "Junior" },
+  { name: "金融系システムJava開発", min: 650000, max: 900000, color: "#3b82f6", rank: "Standard" },
+  { name: "ECサイト・フロントエンド改修", min: 600000, max: 850000, color: "#22d3ee", rank: "Standard" },
+  { name: "次世代AI・機械学習基盤構築", min: 1100000, max: 1500000, color: "#8b5cf6", rank: "Expert" },
+  { name: "セキュリティ脆弱性診断・対策", min: 1000000, max: 1400000, color: "#f43f5e", rank: "Expert" },
+  { name: "SAP・基幹システム導入コンサル", min: 1300000, max: 2000000, color: "#fbbf24", rank: "Expert" },
+];
+
+const DEFAULT_INITIAL_MONEY = 1500000;
+
+// ----------------------------------------------------------------------------
+// ピンの設定
+
 // ピンの設定（絶望の階層構造）
 const PIN_TYPES = [
   { label: "一次請け(大手SIer)", deduction: 300000, color: "#3b82f6", radius: 18, tier: 1 },
@@ -217,7 +232,9 @@ export default function Home() {
 
   // ゲームステート
   const [gameState, setGameState] = useState<"idle" | "playing" | "finished">("idle");
-  const [money, setMoney] = useState(INITIAL_MONEY);
+  const [initialMoney, setInitialMoney] = useState(DEFAULT_INITIAL_MONEY);
+  const [money, setMoney] = useState(DEFAULT_INITIAL_MONEY);
+  const [currentProject, setCurrentProject] = useState(PROJECT_TYPES[1]);
   const [effects, setEffects] = useState<Effect[]>([]);
   const [dropX, setDropX] = useState(50);
   const effectIdRef = useRef(0);
@@ -315,18 +332,25 @@ export default function Home() {
 
   const handleDrop = () => {
     if (gameState !== "idle") return;
+    
+    // 案件をランダム抽選
+    const project = PROJECT_TYPES[Math.floor(Math.random() * PROJECT_TYPES.length)];
+    const amount = Math.floor(project.min + Math.random() * (project.max - project.min));
+    
+    setCurrentProject(project);
+    setInitialMoney(amount);
+    setMoney(amount);
     setGameState("playing");
-    setMoney(INITIAL_MONEY);
     setEffects([]);
   };
 
   const resetGame = () => {
     setGameState("idle");
-    setMoney(INITIAL_MONEY);
+    setMoney(initialMoney); // 演出上は見せるだけ
     if (engineInstanceRef.current) generatePinsInternal(engineInstanceRef.current);
   };
 
-  const deductionRate = (((INITIAL_MONEY - money) / INITIAL_MONEY) * 100).toFixed(1);
+  const deductionRate = (((initialMoney - money) / initialMoney) * 100).toFixed(1);
 
   // 金額に応じた絶望コメント
   const evaluationComment = useMemo(() => {
@@ -356,7 +380,7 @@ export default function Home() {
               パチンコ
             </h1>
             <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: '1.6', margin: '0' }}>
-              ~ 月{INITIAL_MONEY.toLocaleString()}円の案件単価が、<br/>
+              ~ IT業界の商流に飲み込まれ、<br/>
               あなたの銀行口座に届くまでの絶望的な旅路 ~
             </p>
           </div>
@@ -382,7 +406,15 @@ export default function Home() {
         {/* 中央: パチンコ台本体 */}
         <div className="flex flex-col items-center" style={{ gap: '1.5rem' }}>
           {/* マネーカウンター */}
-          <div className="glass-panel" style={{ width: '100%', minWidth: '320px', padding: '2rem', textAlign: 'center', position: 'relative' }}>
+          <div className="glass-panel" style={{ width: '100%', minWidth: '320px', padding: '1.5rem 2rem', textAlign: 'center', position: 'relative' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '0.75rem' }}>
+              <div style={{ fontSize: '10px', fontWeight: '900', color: currentProject.color, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {currentProject.rank} Project
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: '900', color: 'white' }}>
+                {currentProject.name}
+              </div>
+            </div>
             <div style={{ fontSize: '10px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.3em', marginBottom: '0.5rem' }}>Estimated Net Income</div>
             <div className="font-display font-black tabular-nums transition-all" style={{ fontSize: '4rem', color: money < 300000 ? 'var(--neon-rose)' : 'var(--neon-amber)', textShadow: money < 300000 ? '0 0 15px rgba(251, 113, 133, 0.5)' : '0 0 15px rgba(251, 191, 36, 0.5)' }}>
               {money.toLocaleString()} <span style={{ fontSize: '1.5rem', opacity: '0.7', marginLeft: '0.25rem' }}>円</span>
@@ -472,7 +504,7 @@ export default function Home() {
               <h2 className="font-display font-black" style={{ fontSize: '4rem', color: 'white', textTransform: 'uppercase', margin: '0' }}>
                 The <span className="neon-text-rose">End</span>
               </h2>
-              <p style={{ color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '12px' }}>{(INITIAL_MONEY/10000).toLocaleString()}万円の案件の成れの果て</p>
+              <p style={{ color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '12px' }}>{(initialMoney/10000).toLocaleString()}万円の案件「{currentProject.name}」の成れの果て</p>
             </div>
 
             <div className="glass-panel" style={{ padding: '2.5rem', border: '2px solid rgba(255,255,255,0.1)' }}>
