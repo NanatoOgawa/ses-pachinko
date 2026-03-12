@@ -50,7 +50,7 @@ const GameCanvas = ({
   const effectIdRef = useRef(0);
 
   const cw = 390;
-  const ch = 700;
+  const ch = 600;
 
   // 初期化（Matter.js）
   useEffect(() => {
@@ -117,7 +117,7 @@ const GameCanvas = ({
         const b = ballRef.current;
         const vel = b.velocity;
         const speedSq = vel.x * vel.x + vel.y * vel.y;
-        if (speedSq < 0.1 && b.position.y < ch - 100) {
+        if (speedSq < 0.1 && b.position.y < ch - 50) {
           Matter.Body.applyForce(b, b.position, { x: (Math.random() - 0.5) * 0.005, y: 0.002 });
         }
       }
@@ -160,44 +160,48 @@ const GameCanvas = ({
   }, [gameState]);
 
   return (
-    <div className="relative w-[400px] h-[720px] p-2 bg-zinc-900 rounded-[2.5rem] border-[6px] border-zinc-800 shadow-[0_0_50px_rgba(0,0,0,1),0_0_20px_rgba(34,211,238,0.2)] overflow-hidden">
+    <div className="relative w-[400px] bg-zinc-900 rounded-[2.5rem] border-[6px] border-zinc-800 shadow-[0_0_50px_rgba(0,0,0,1)] p-2">
       {/* 筐体のネオン管演出 */}
       <div className="absolute inset-0 border-2 border-cyan-500/20 rounded-[2.2rem] pointer-events-none z-10" />
-      <div className="absolute -inset-1 border border-cyan-400/10 rounded-[2.6rem] blur-sm pointer-events-none" />
 
-      <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-black/80 bg-cyber-grid">
-        <div ref={sceneRef} className="absolute inset-0" />
+      <div className="relative w-full rounded-[2rem] overflow-hidden bg-black/80 bg-cyber-grid flex flex-col items-center">
         
-        {/* 落下位置のプレビュー */}
-        {gameState === "idle" && (
-          <div 
-            className="absolute top-4 w-12 h-12 border-4 border-amber-400/50 rounded-full flex items-center justify-center animate-pulse shadow-[0_0_15px_rgba(251,191,36,0.5)]"
-            style={{ left: `${dropX}%`, transform: 'translateX(-50%)' }}
-          >
-            <span className="text-amber-400 text-xs font-black">{(INITIAL_MONEY/10000)}万</span>
-          </div>
-        )}
-
-        {/* 衝突ポップアップエフェクト */}
-        {effects.map((ef) => (
-          <div
-            key={ef.id}
-            className="absolute text-rose-500 font-black text-2xl pointer-events-none animate-float-up whitespace-nowrap z-20 neon-text-rose"
-            style={{ left: ef.x, top: ef.y }}
-          >
-            {ef.text}
-          </div>
-        ))}
-      </div>
-
-      {/* キャンバスの外側に情報を配置（重なり防止） */}
-      <div className="flex flex-col items-center mt-4 gap-2">
-        <div style={{ background: 'rgba(153, 27, 27, 0.4)', borderLeft: '4px solid #ef4444', padding: '0.5rem 1rem', width: '100%', borderRadius: '4px' }}>
-          <div style={{ fontSize: '10px', color: '#fca5a5', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Security & Tax Barrier</div>
-          <div style={{ fontSize: '12px', color: 'white', fontWeight: '700' }}>絶対防衛線：税金・社会保険料 (-20%)</div>
+        {/* 上部：落下位置と初期情報 */}
+        <div className="relative w-full h-[100px] flex items-center justify-center border-b border-zinc-800/50">
+          {gameState === "idle" && (
+            <div 
+              className="absolute top-4 w-12 h-12 border-4 border-amber-400/50 rounded-full flex items-center justify-center animate-pulse shadow-[0_0_15px_rgba(251,191,36,0.5)]"
+              style={{ left: `${dropX}%`, transform: 'translateX(-50%)' }}
+            >
+              <span className="text-amber-400 text-xs font-black">{(INITIAL_MONEY/10000)}万</span>
+            </div>
+          )}
+          <span className="text-zinc-700 text-[10px] font-black tracking-[0.5em] uppercase opacity-50">Drop Zone</span>
         </div>
-        <div className="text-center opacity-40">
-          <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.4em' }}>Final Destination</div>
+
+        {/* メイン：Matter.js キャンバス */}
+        <div ref={sceneRef} className="relative w-full h-[600px]" style={{ zIndex: 5 }}>
+          {/* 衝突ポップアップエフェクト */}
+          {effects.map((ef) => (
+            <div
+              key={ef.id}
+              className="absolute text-rose-500 font-black text-2xl pointer-events-none animate-float-up whitespace-nowrap z-20 neon-text-rose"
+              style={{ left: ef.x, top: ef.y }}
+            >
+              {ef.text}
+            </div>
+          ))}
+        </div>
+
+        {/* 下部：税金ゾーンとゴール情報 */}
+        <div className="relative w-full p-4 flex flex-col gap-3 bg-zinc-950/80 border-t border-zinc-800/50 z-20">
+          <div style={{ background: 'rgba(153, 27, 27, 0.4)', borderLeft: '4px solid #ef4444', padding: '0.5rem 1rem', borderRadius: '4px' }}>
+            <div style={{ fontSize: '10px', color: '#fca5a5', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Security & Tax Barrier</div>
+            <div style={{ fontSize: '12px', color: 'white', fontWeight: '700' }}>絶対防衛線：税金・社会保険料 (-20%)</div>
+          </div>
+          <div className="text-center opacity-40">
+            <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.4em' }}>Final Destination</div>
+          </div>
         </div>
       </div>
     </div>
@@ -238,39 +242,39 @@ export default function Home() {
     const patternType = Math.floor(Math.random() * 8); 
     switch (patternType) {
       case 0: // スタンダード
-        for (let r = 0; r < 10; r++) {
+        for (let r = 0; r < 8; r++) {
           const cols = r % 2 === 0 ? 5 : 6;
           const spacingX = cw / 6;
           const startX = r % 2 === 0 ? spacingX : spacingX / 2;
           for (let c = 0; c < cols; c++) {
-            let idx = r < 3 ? 0 : (r < 6 ? 1 : (Math.random() > 0.5 ? 2 : 3));
-            addPin(idx, startX + c * spacingX + (Math.random()-0.5)*20, 140 + r * 60);
+            let idx = r < 2 ? 0 : (r < 5 ? 1 : (Math.random() > 0.5 ? 2 : 3));
+            addPin(idx, startX + c * spacingX + (Math.random()-0.5)*20, 60 + r * 55);
           }
         }
         break;
       case 1: // V字
-        for (let r = 0; r < 9; r++) {
+        for (let r = 0; r < 8; r++) {
           const gap = Math.max(30, 160 - r * 15);
-          addPin(r < 3 ? 0 : 1, cw/2 - gap, 150 + r * 55);
-          addPin(r < 3 ? 0 : 1, cw/2 + gap, 150 + r * 55);
-          if (r > 4 && r % 2 === 0) addPin(3, cw / 2, 175 + r * 55);
+          addPin(r < 3 ? 0 : 1, cw/2 - gap, 60 + r * 55);
+          addPin(r < 3 ? 0 : 1, cw/2 + gap, 60 + r * 55);
+          if (r > 3 && r % 2 === 0) addPin(3, cw / 2, 85 + r * 55);
         }
         break;
       case 5: // 回廊
-        for (let r = 0; r < 10; r++) {
-          addPin(0, 40, 140 + r * 55);
-          addPin(0, cw - 40, 140 + r * 55);
-          if (r > 3 && Math.random() > 0.2) addPin(r < 7 ? 1 : 2, cw/2 + (Math.random()-0.5)*60, 150 + r * 55);
+        for (let r = 0; r < 8; r++) {
+          addPin(0, 40, 60 + r * 55);
+          addPin(0, cw - 40, 60 + r * 55);
+          if (r > 2 && Math.random() > 0.2) addPin(r < 6 ? 1 : 2, cw/2 + (Math.random()-0.5)*60, 60 + r * 55);
         }
         break;
       default: // 乱立その他
-        for (let i = 0; i < 45; i++) {
-          const y = 140 + Math.random() * 420;
-          addPin(y < 250 ? 0 : (y < 400 ? 1 : 2), 30 + Math.random()*(cw-60), y);
+        for (let i = 0; i < 40; i++) {
+          const y = 60 + Math.random() * 400;
+          addPin(y < 180 ? 0 : (y < 320 ? 1 : 2), 30 + Math.random()*(cw-60), y);
         }
     }
     // 端抜け防止
-    for (let y = 150; y < 600; y += 100) {
+    for (let y = 100; y < 500; y += 100) {
       addPin(0, 15, y);
       addPin(0, cw - 15, y);
     }
