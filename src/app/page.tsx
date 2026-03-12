@@ -337,58 +337,59 @@ export default function Home() {
   }, [money]);
 
   return (
-    <main className="min-h-screen flex flex-col items-center bg-scanlines text-zinc-100 font-sans tracking-tight selection:bg-rose-500/30 overflow-x-hidden">
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 lg:mt-20 px-4 md:px-8">
+    <main className="cyber-container">
+      {/* 背景エフェクト */}
+      <div className="cyber-grid" />
+      <div className="scanlines" />
+
+      <div className="cyber-wrapper">
         
-        {/* 左サイドパネル: メインタイトル */}
-        <div className="flex flex-col w-full lg:w-[320px] space-y-8 text-center lg:text-left">
-          <div className="space-y-4 flex flex-col items-center lg:items-start">
-            <div className="inline-block px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[10px] font-black tracking-widest uppercase mb-2">
+        {/* 左サイド: タイトル・説明 */}
+        <div className="flex flex-col items-center lg:items-start" style={{ width: '100%', maxWidth: '320px', gap: '2rem' }}>
+          <div className="flex flex-col items-center lg:items-start" style={{ gap: '1rem' }}>
+            <div className="font-black uppercase tracking-widest" style={{ fontSize: '10px', color: 'var(--neon-rose)', background: 'rgba(251, 113, 133, 0.1)', padding: '0.25rem 0.75rem', borderRadius: '1rem', border: '1px solid rgba(251, 113, 133, 0.2)' }}>
               Industry Simulator v2.0
             </div>
-            <h1 className="text-5xl xl:text-6xl font-black text-white leading-[0.9] font-display">
+            <h1 className="font-display font-black" style={{ fontSize: '3.5rem', lineHeight: '1', margin: '0' }}>
               絶望の<br/>
-              <span className="text-rose-500 neon-text-rose italic">中抜き</span><br/>
+              <span className="neon-text-rose" style={{ fontStyle: 'italic' }}>中抜き</span><br/>
               パチンコ
             </h1>
-            <p className="text-zinc-500 text-sm leading-relaxed max-w-xs font-medium">
+            <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: '1.6', margin: '0' }}>
               ~ 月{INITIAL_MONEY.toLocaleString()}円の案件単価が、<br/>
               あなたの銀行口座に届くまでの絶望的な旅路 ~
             </p>
           </div>
 
-          <div className="glass-dark p-6 rounded-3xl border-l-4 border-l-cyan-500 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Sparkles size={60} />
+          <div className="glass-panel" style={{ padding: '1.5rem', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: '0.05' }}>
+              <Sparkles size={80} />
             </div>
-            <h3 className="text-cyan-400 font-black mb-3 flex items-center gap-2 text-sm tracking-wider uppercase">
+            <h3 className="neon-text-cyan font-black" style={{ fontSize: '0.875rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase' }}>
               <Sparkles size={16} />
               The Reality of SES
             </h3>
-            <p className="text-zinc-400 text-xs leading-relaxed font-medium">
+            <p style={{ color: '#94a3b8', fontSize: '0.75rem', lineHeight: '1.6', margin: '0' }}>
               日本のIT業界を蝕む多重下請けの商流を、Matter.jsによる物理演算で忠実に再現。元請けからあなたの口座に届くまでに、無数の業者がピンハネしていく現実を体感せよ。
             </p>
           </div>
 
-          <div className="hidden lg:block text-[10px] text-zinc-600 font-bold tracking-widest uppercase">
+          <div className="font-black uppercase tracking-widest" style={{ fontSize: '10px', color: '#475569', display: 'none' }}>
             Designed for Viral despair
           </div>
         </div>
 
-        {/* 中央: メインゲームエリア */}
-        <div className="flex flex-col items-center space-y-6">
-          {/* マネーカウンター（ド派手に） */}
-          <div className="w-full max-w-md z-20">
-            <div className="glass-dark rounded-[2rem] p-8 flex flex-col items-center justify-center relative border-b-4 border-b-rose-500/30 overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-              <p className="text-zinc-500 text-[10px] font-black tracking-[0.3em] uppercase mb-2">Estimated Net Income</p>
-              <div className={`text-6xl font-black tabular-nums transition-all duration-300 font-display ${money < 300000 ? 'text-rose-500 neon-text-rose' : 'text-amber-400 neon-text-amber'}`}>
-                {money.toLocaleString()} <span className="text-2xl ml-1 opacity-70">円</span>
-              </div>
-              {gameState === "playing" && (
-                <div className="absolute -bottom-2 w-full h-8 bg-rose-500/10 blur-xl animate-pulse" />
-              )}
+        {/* 中央: パチンコ台本体 */}
+        <div className="flex flex-col items-center" style={{ gap: '1.5rem' }}>
+          {/* マネーカウンター */}
+          <div className="glass-panel" style={{ width: '100%', minWidth: '320px', padding: '2rem', textAlign: 'center', position: 'relative' }}>
+            <div style={{ fontSize: '10px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.3em', marginBottom: '0.5rem' }}>Estimated Net Income</div>
+            <div className="font-display font-black tabular-nums transition-all" style={{ fontSize: '4rem', color: money < 300000 ? 'var(--neon-rose)' : 'var(--neon-amber)', textShadow: money < 300000 ? '0 0 15px rgba(251, 113, 133, 0.5)' : '0 0 15px rgba(251, 191, 36, 0.5)' }}>
+              {money.toLocaleString()} <span style={{ fontSize: '1.5rem', opacity: '0.7', marginLeft: '0.25rem' }}>円</span>
             </div>
+            {gameState === "playing" && (
+              <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '4px', background: 'var(--neon-rose)', boxShadow: '0 0 15px var(--neon-rose)', opacity: '0.3' }} className="animate-pulse" />
+            )}
           </div>
 
           <GameCanvas 
@@ -406,88 +407,98 @@ export default function Home() {
           />
         </div>
 
-        {/* 右サイドパネル: 操作系 */}
-        <div className="w-full lg:w-[320px] max-w-md space-y-6">
+        {/* 右サイド: コントロール */}
+        <div className="flex flex-col" style={{ width: '100%', maxWidth: '320px', gap: '1.5rem' }}>
           {gameState === "idle" ? (
-            <div className="glass-dark p-8 rounded-[2.5rem] space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-              <div className="space-y-4">
-                <div className="flex justify-between items-end">
-                  <label className="text-xs font-black text-zinc-400 tracking-widest uppercase">Select Drop Position</label>
-                  <span className="text-amber-400 font-black text-sm">{dropX}%</span>
+            <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                  <label style={{ fontSize: '12px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Drop Position</label>
+                  <span style={{ color: 'var(--neon-amber)', fontWeight: '900', fontSize: '14px' }}>{dropX}%</span>
                 </div>
                 <input 
                   type="range" 
                   min="5" max="95" 
                   value={dropX} 
                   onChange={(e) => setDropX(Number(e.target.value))} 
-                  className="w-full h-2 bg-zinc-800 rounded-full appearance-none cursor-pointer accent-rose-600 border border-zinc-700 hover:border-zinc-500 transition-colors" 
+                  style={{ width: '100%', accentColor: 'var(--neon-rose)', cursor: 'pointer' }}
                 />
-                <p className="text-[10px] text-rose-400/70 font-bold bg-rose-500/5 p-3 rounded-xl border border-rose-500/10">
-                  ※警告: 日本のIT商流において、どの位置から落としても構造的に搾取は避けられません。
-                </p>
+                <div style={{ fontSize: '10px', color: 'rgba(251, 113, 133, 0.8)', fontWeight: '700', background: 'rgba(251, 113, 133, 0.05)', padding: '0.75rem', borderRadius: '0.75rem', border: '1px solid rgba(251, 113, 133, 0.1)' }}>
+                  警告: 構造的に搾取は避けられません。
+                </div>
               </div>
               
               <button 
                 onClick={handleDrop} 
-                className="w-full relative group overflow-hidden bg-rose-600 hover:bg-rose-500 text-white py-6 rounded-2xl text-2xl font-black transition-all active:scale-[0.98] shadow-[0_20px_40px_-10px_rgba(225,29,72,0.5)]"
+                style={{ 
+                  width: '100%', 
+                  background: 'var(--neon-rose)', 
+                  color: 'white', 
+                  padding: '1.5rem', 
+                  borderRadius: '1rem', 
+                  fontSize: '1.5rem', 
+                  fontWeight: '900', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 30px rgba(251, 113, 133, 0.4)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.75rem',
+                  transition: 'transform 0.2s active'
+                }}
               >
-                <div className="absolute inset-0 bg-gradient-to-tr from-rose-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative flex items-center justify-center gap-3">
-                  <ArrowDownToLine size={28} className="group-hover:translate-y-1 transition-transform" />
-                  案件を受注する
-                </div>
+                <ArrowDownToLine size={28} />
+                案件を受注する
               </button>
             </div>
           ) : (
-            <div className="glass-dark p-8 rounded-[2.5rem] flex flex-col items-center justify-center space-y-4 border-dashed border-zinc-700 opacity-60">
-              <div className="w-12 h-12 rounded-full border-4 border-cyan-500/30 border-t-cyan-500 animate-spin" />
-              <p className="text-xs font-black text-cyan-400 tracking-widest uppercase">Simulation in Progress</p>
-              <p className="text-[10px] text-zinc-500 font-bold text-center">業者がピンハネ中...</p>
+            <div className="glass-panel" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.1)', opacity: '0.6' }}>
+              <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', border: '4px solid rgba(34, 211, 238, 0.2)', borderTopColor: 'var(--neon-cyan)', animation: 'spin 1s linear infinite' }} />
+              <style dangerouslySetInnerHTML={{ __html: "@keyframes spin { to { transform: rotate(360deg); } }" }} />
+              <div style={{ fontSize: '10px', fontWeight: '900', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>Simulation In Progress</div>
+              <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '700' }}>業者がピンハネ中...</div>
             </div>
           )}
         </div>
       </div>
 
-      {/* 最終結果（ドラマチックなフルスクリーンモーダル） */}
+      {/* 最終結果モーダル */}
       {gameState === "finished" && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-in fade-in duration-700">
-          <div className="w-full max-w-xl space-y-10 animate-in zoom-in-95 slide-in-from-bottom-10 duration-700">
-            <div className="text-center space-y-4">
-              <div className="inline-block px-4 py-1 rounded-full bg-rose-500 text-white text-[10px] font-black tracking-[0.3em] uppercase shadow-[0_0_20px_rgba(225,29,72,0.5)]">
-                Simulation Finished
-              </div>
-              <h2 className="text-6xl font-black text-white font-display uppercase tracking-tighter">
-                The <span className="text-rose-500">End</span> of Profit
+        <div style={{ position: 'fixed', inset: '0', zIndex: '200', background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '2.5rem', textAlign: 'center' }}>
+            <div>
+              <div style={{ display: 'inline-block', padding: '0.25rem 1rem', background: 'var(--neon-rose)', color: 'white', borderRadius: '2rem', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: '1rem' }}>Simulation Finished</div>
+              <h2 className="font-display font-black" style={{ fontSize: '4rem', color: 'white', textTransform: 'uppercase', margin: '0' }}>
+                The <span className="neon-text-rose">End</span>
               </h2>
-              <p className="text-zinc-500 font-bold tracking-widest uppercase text-xs">{(INITIAL_MONEY/10000).toLocaleString()}万円の案件の成れの果て</p>
+              <p style={{ color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', fontSize: '12px' }}>{(INITIAL_MONEY/10000).toLocaleString()}万円の案件の成れの果て</p>
             </div>
 
-            <div className="glass-dark p-10 rounded-[3rem] border-2 border-zinc-700 relative overflow-hidden text-center space-y-8">
-              <div className="absolute inset-0 bg-gradient-to-b from-rose-500/5 to-transparent pointer-events-none" />
-              
-              <div className="space-y-2 relative">
-                <p className="text-zinc-500 text-[10px] font-black tracking-[0.4em] uppercase">Your Final Bank Account</p>
-                <p className="text-7xl font-black text-amber-400 neon-text-amber font-display tracking-tight">
-                  {money.toLocaleString()}<span className="text-3xl ml-2 opacity-70">円</span>
+            <div className="glass-panel" style={{ padding: '2.5rem', border: '2px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ marginBottom: '2rem' }}>
+                <p style={{ fontSize: '10px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.3em', marginBottom: '0.5rem' }}>Your Final Income</p>
+                <p className="font-display font-black neon-text-amber" style={{ fontSize: '4.5rem', margin: '0' }}>
+                  {money.toLocaleString()}<span style={{ fontSize: '2rem', opacity: '0.7', marginLeft: '0.25rem' }}>円</span>
                 </p>
               </div>
 
-              <div className="relative inline-block px-8 py-4 bg-zinc-800/50 rounded-2xl border border-zinc-700 shadow-inner">
-                <p className="text-rose-400 font-black text-lg leading-relaxed italic whitespace-pre-wrap">
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <p className="neon-text-rose" style={{ fontWeight: '900', fontSize: '1.125rem', fontStyle: 'italic', whiteSpace: 'pre-wrap', margin: '0' }}>
                   {evaluationComment}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <ShareButton deductionRate={deductionRate} finalAmount={money} evaluationMessage={evaluationComment} />
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <ShareButton deductionRate={deductionRate} finalAmount={money} evaluationMessage={evaluationComment} />
               <button 
                 onClick={resetGame} 
-                className="flex-[0.6] flex items-center justify-center gap-3 text-zinc-400 hover:text-white py-5 rounded-2xl font-black transition-all bg-zinc-900 border-2 border-zinc-800 hover:border-zinc-700 group shadow-xl"
+                style={{ 
+                  width: '100%', background: 'transparent', border: '1px solid #334155', color: '#94a3b8', padding: '1rem', borderRadius: '1rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
+                }}
               >
-                <RefreshCw size={22} className="group-hover:rotate-180 transition-transform duration-700" />
+                <RefreshCw size={20} />
                 もう一度現実を見る
               </button>
             </div>
