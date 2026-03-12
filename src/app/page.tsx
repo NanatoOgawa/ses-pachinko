@@ -178,21 +178,6 @@ const GameCanvas = ({
           </div>
         )}
 
-        {/* 税金ゾーンのよりリッチな警告 */}
-        <div className="absolute bottom-[80px] left-0 w-full flex justify-center pointer-events-none">
-          <div className="px-6 py-2 bg-red-950/90 border-y-2 border-red-500/50 flex flex-col items-center gap-1 backdrop-blur-md">
-            <span className="text-[10px] text-red-400 font-black tracking-[0.3em] uppercase">Security & Tax Barrier</span>
-            <span className="text-xs text-white font-black">絶対防衛線：税金・社会保険料 (-20%)</span>
-          </div>
-        </div>
-
-        {/* 下部の最終地点ラベル */}
-        <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">
-          <span className="text-zinc-600 text-[10px] font-black tracking-[0.5em] uppercase opacity-50">
-            Final Destination / Engineer Account
-          </span>
-        </div>
-
         {/* 衝突ポップアップエフェクト */}
         {effects.map((ef) => (
           <div
@@ -203,6 +188,17 @@ const GameCanvas = ({
             {ef.text}
           </div>
         ))}
+      </div>
+
+      {/* キャンバスの外側に情報を配置（重なり防止） */}
+      <div className="flex flex-col items-center mt-4 gap-2">
+        <div style={{ background: 'rgba(153, 27, 27, 0.4)', borderLeft: '4px solid #ef4444', padding: '0.5rem 1rem', width: '100%', borderRadius: '4px' }}>
+          <div style={{ fontSize: '10px', color: '#fca5a5', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Security & Tax Barrier</div>
+          <div style={{ fontSize: '12px', color: 'white', fontWeight: '700' }}>絶対防衛線：税金・社会保険料 (-20%)</div>
+        </div>
+        <div className="text-center opacity-40">
+          <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.4em' }}>Final Destination</div>
+        </div>
       </div>
     </div>
   );
