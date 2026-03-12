@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
-import Matter from "matter-js";
+import * as Matter from "matter-js";
 import { Sparkles, ArrowDownToLine, RefreshCw } from "lucide-react";
 import ShareButton from "../components/ShareButton";
-
-// エンジンのエイリアス
-const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
 
 const INITIAL_MONEY = 1500000;
 
@@ -59,6 +56,8 @@ const GameCanvas = ({
   useEffect(() => {
     if (!sceneRef.current) return;
 
+    const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
+
     const engine = Engine.create();
     const render = Render.create({
       element: sceneRef.current,
@@ -104,7 +103,7 @@ const GameCanvas = ({
         } else if (ball && other.label === "tax_zone") {
           onTaxZone();
           other.label = "tax_zone_done";
-          Body.scale(ball, 0.8, 0.8);
+          Matter.Body.scale(ball, 0.8, 0.8);
           ball.render.fillStyle = "#451a03"; 
         } else if (ball && other.label === "ground") {
           onFinish();
@@ -119,7 +118,7 @@ const GameCanvas = ({
         const vel = b.velocity;
         const speedSq = vel.x * vel.x + vel.y * vel.y;
         if (speedSq < 0.1 && b.position.y < ch - 100) {
-          Body.applyForce(b, b.position, { x: (Math.random() - 0.5) * 0.005, y: 0.002 });
+          Matter.Body.applyForce(b, b.position, { x: (Math.random() - 0.5) * 0.005, y: 0.002 });
         }
       }
     });
@@ -144,7 +143,7 @@ const GameCanvas = ({
   useEffect(() => {
     if (gameState === "playing" && !ballRef.current && engineRef.current) {
       const dropXPos = (dropX / 100) * (cw - 60) + 30 + (Math.random() - 0.5) * 20;
-      const ball = Bodies.circle(dropXPos, 30, 20, {
+      const ball = Matter.Bodies.circle(dropXPos, 30, 20, {
         label: "ball",
         restitution: 0.8,
         friction: 0,
@@ -153,9 +152,9 @@ const GameCanvas = ({
         render: { fillStyle: "#fbbf24", strokeStyle: "#f59e0b", lineWidth: 3 },
       });
       ballRef.current = ball;
-      World.add(engineRef.current.world, ball);
+      Matter.World.add(engineRef.current.world, ball);
     } else if (gameState === "idle" && ballRef.current) {
-      if (engineRef.current) Composite.remove(engineRef.current.world, ballRef.current);
+      if (engineRef.current) Matter.Composite.remove(engineRef.current.world, ballRef.current);
       ballRef.current = null;
     }
   }, [gameState]);
@@ -208,6 +207,7 @@ export default function Home() {
 
   // ピン生成ロジック (GameCanvas外で管理)
   const generatePinsInternal = (engine: Matter.Engine) => {
+    const { World, Bodies, Composite } = Matter;
     const cw = 390;
     const existingPins = Composite.allBodies(engine.world).filter(b => b.label.startsWith('pin_'));
     Composite.remove(engine.world, existingPins);
