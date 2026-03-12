@@ -160,33 +160,50 @@ const GameCanvas = ({
   }, [gameState]);
 
   return (
-    <div className="relative w-[390px] h-[700px] border-2 border-zinc-800 rounded-3xl overflow-hidden bg-black/50 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
-      <div ref={sceneRef} className="absolute inset-0" />
-      {gameState === "idle" && (
-        <div 
-          className="absolute top-4 w-12 h-12 border-4 border-yellow-500/50 rounded-full flex items-center justify-center animate-pulse"
-          style={{ left: `${dropX}%`, transform: 'translateX(-50%)' }}
-        >
-          <span className="text-yellow-500 text-xs font-bold">{(INITIAL_MONEY/10000)}万</span>
+    <div className="relative w-[400px] h-[720px] p-2 bg-zinc-900 rounded-[2.5rem] border-[6px] border-zinc-800 shadow-[0_0_50px_rgba(0,0,0,1),0_0_20px_rgba(34,211,238,0.2)] overflow-hidden">
+      {/* 筐体のネオン管演出 */}
+      <div className="absolute inset-0 border-2 border-cyan-500/20 rounded-[2.2rem] pointer-events-none z-10" />
+      <div className="absolute -inset-1 border border-cyan-400/10 rounded-[2.6rem] blur-sm pointer-events-none" />
+
+      <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-black/80 bg-cyber-grid">
+        <div ref={sceneRef} className="absolute inset-0" />
+        
+        {/* 落下位置のプレビュー */}
+        {gameState === "idle" && (
+          <div 
+            className="absolute top-4 w-12 h-12 border-4 border-amber-400/50 rounded-full flex items-center justify-center animate-pulse shadow-[0_0_15px_rgba(251,191,36,0.5)]"
+            style={{ left: `${dropX}%`, transform: 'translateX(-50%)' }}
+          >
+            <span className="text-amber-400 text-xs font-black">{(INITIAL_MONEY/10000)}万</span>
+          </div>
+        )}
+
+        {/* 税金ゾーンのよりリッチな警告 */}
+        <div className="absolute bottom-[80px] left-0 w-full flex justify-center pointer-events-none">
+          <div className="px-6 py-2 bg-red-950/90 border-y-2 border-red-500/50 flex flex-col items-center gap-1 backdrop-blur-md">
+            <span className="text-[10px] text-red-400 font-black tracking-[0.3em] uppercase">Security & Tax Barrier</span>
+            <span className="text-xs text-white font-black">絶対防衛線：税金・社会保険料 (-20%)</span>
+          </div>
         </div>
-      )}
-      <div className="absolute bottom-[60px] left-0 w-full text-center pointer-events-none">
-        <span className="bg-red-900/80 text-white text-xs px-4 py-1 rounded-full font-bold border border-red-500/50">
-          絶対防衛線：税金・社会保険料 (-20%)
-        </span>
-      </div>
-      <div className="absolute bottom-2 left-0 w-full text-center pointer-events-none">
-        <span className="text-zinc-500 text-sm font-black tracking-widest">ENGINEER (YOUR BANK ACCOUNT)</span>
-      </div>
-      {effects.map((ef) => (
-        <div
-          key={ef.id}
-          className="absolute text-rose-500 font-extrabold text-xl pointer-events-none animate-float-up text-shadow-glow"
-          style={{ left: ef.x - 20, top: ef.y - 10 }}
-        >
-          {ef.text}
+
+        {/* 下部の最終地点ラベル */}
+        <div className="absolute bottom-4 left-0 w-full text-center pointer-events-none">
+          <span className="text-zinc-600 text-[10px] font-black tracking-[0.5em] uppercase opacity-50">
+            Final Destination / Engineer Account
+          </span>
         </div>
-      ))}
+
+        {/* 衝突ポップアップエフェクト */}
+        {effects.map((ef) => (
+          <div
+            key={ef.id}
+            className="absolute text-rose-500 font-black text-2xl pointer-events-none animate-float-up whitespace-nowrap z-20 neon-text-rose"
+            style={{ left: ef.x, top: ef.y }}
+          >
+            {ef.text}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -320,33 +337,57 @@ export default function Home() {
   }, [money]);
 
   return (
-    <main className="min-h-screen flex flex-col items-center pb-20 bg-scanlines text-zinc-100 font-sans tracking-tight">
-      <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8 lg:mt-10 px-4">
+    <main className="min-h-screen flex flex-col items-center bg-scanlines text-zinc-100 font-sans tracking-tight selection:bg-rose-500/30 overflow-x-hidden">
+      <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 lg:mt-20 px-4 md:px-8">
         
-        {/* 左サイドパネル */}
-        <div className="hidden lg:flex flex-col w-1/3 xl:w-1/4 space-y-6 pt-10">
-          <div className="space-y-2">
-            <h1 className="text-4xl font-black text-rose-500 text-shadow-glow leading-tight">絶望の<br/>中抜きパチンコ</h1>
+        {/* 左サイドパネル: メインタイトル */}
+        <div className="flex flex-col w-full lg:w-[320px] space-y-8 text-center lg:text-left">
+          <div className="space-y-4 flex flex-col items-center lg:items-start">
+            <div className="inline-block px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500 text-[10px] font-black tracking-widest uppercase mb-2">
+              Industry Simulator v2.0
+            </div>
+            <h1 className="text-5xl xl:text-6xl font-black text-white leading-[0.9] font-display">
+              絶望の<br/>
+              <span className="text-rose-500 neon-text-rose italic">中抜き</span><br/>
+              パチンコ
+            </h1>
+            <p className="text-zinc-500 text-sm leading-relaxed max-w-xs font-medium">
+              ~ 月{INITIAL_MONEY.toLocaleString()}円の案件単価が、<br/>
+              あなたの銀行口座に届くまでの絶望的な旅路 ~
+            </p>
           </div>
-          <div className="glass-dark p-6 rounded-2xl border border-zinc-700/50">
-            <h3 className="text-rose-400 font-bold mb-2 flex items-center gap-2"><Sparkles size={18} />SESの「商流」を体感</h3>
-            <p className="text-zinc-500 text-xs leading-relaxed">日本のIT業界を蝕む多重下請け。元請けからあなたの口座に届くまでに、無数の業者がピンハネしていく現実をリアルな物理シミュレーションで再現。</p>
+
+          <div className="glass-dark p-6 rounded-3xl border-l-4 border-l-cyan-500 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Sparkles size={60} />
+            </div>
+            <h3 className="text-cyan-400 font-black mb-3 flex items-center gap-2 text-sm tracking-wider uppercase">
+              <Sparkles size={16} />
+              The Reality of SES
+            </h3>
+            <p className="text-zinc-400 text-xs leading-relaxed font-medium">
+              日本のIT業界を蝕む多重下請けの商流を、Matter.jsによる物理演算で忠実に再現。元請けからあなたの口座に届くまでに、無数の業者がピンハネしていく現実を体感せよ。
+            </p>
+          </div>
+
+          <div className="hidden lg:block text-[10px] text-zinc-600 font-bold tracking-widest uppercase">
+            Designed for Viral despair
           </div>
         </div>
 
-        {/* 中央: ゲームエリア */}
-        <div className="flex flex-col items-center space-y-4">
-          <div className="lg:hidden w-full max-w-md p-6 text-center space-y-2 mt-4">
-            <h1 className="text-3xl font-black text-rose-500 text-shadow-glow">絶望の中抜きパチンコ</h1>
-          </div>
-
-          {/* スコアボード - レイアウトシフト防止のため幅固定 */}
-          <div className="w-full max-w-md z-10 sticky top-4 mb-4 h-[120px]">
-            <div className="glass-dark rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden border border-rose-500/20 shadow-[0_0_30px_rgba(225,29,72,0.1)] h-full">
-              <p className="text-zinc-400 text-sm font-bold mb-1">現在の案件価値（見込み）</p>
-              <div className="text-5xl font-black tabular-nums min-w-[300px] text-center" style={{ color: money < 300000 ? '#ef4444' : '#fbbf24' }}>
-                {money.toLocaleString()} <span className="text-2xl">円</span>
+        {/* 中央: メインゲームエリア */}
+        <div className="flex flex-col items-center space-y-6">
+          {/* マネーカウンター（ド派手に） */}
+          <div className="w-full max-w-md z-20">
+            <div className="glass-dark rounded-[2rem] p-8 flex flex-col items-center justify-center relative border-b-4 border-b-rose-500/30 overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+              <p className="text-zinc-500 text-[10px] font-black tracking-[0.3em] uppercase mb-2">Estimated Net Income</p>
+              <div className={`text-6xl font-black tabular-nums transition-all duration-300 font-display ${money < 300000 ? 'text-rose-500 neon-text-rose' : 'text-amber-400 neon-text-amber'}`}>
+                {money.toLocaleString()} <span className="text-2xl ml-1 opacity-70">円</span>
               </div>
+              {gameState === "playing" && (
+                <div className="absolute -bottom-2 w-full h-8 bg-rose-500/10 blur-xl animate-pulse" />
+              )}
             </div>
           </div>
 
@@ -365,44 +406,89 @@ export default function Home() {
           />
         </div>
 
-        {/* 右サイドパネル */}
-        <div className="w-full lg:w-1/3 xl:w-1/4 max-w-md lg:pt-32 space-y-4 px-2">
-          {gameState === "idle" && (
-            <div className="glass-dark p-6 rounded-2xl space-y-6 shadow-2xl border border-zinc-700/50">
-              <div className="space-y-3">
-                <label className="block text-center text-sm font-bold text-zinc-300">
-                  ボール（案件）を落とす位置を決めろ。<br/>
-                  <span className="text-rose-400 text-xs mt-1 block tracking-wider">※どこから落としても構造的に搾取されます</span>
-                </label>
-                <div className="px-2">
-                  <input type="range" min="5" max="95" value={dropX} onChange={(e) => setDropX(Number(e.target.value))} className="w-full h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-rose-500" />
+        {/* 右サイドパネル: 操作系 */}
+        <div className="w-full lg:w-[320px] max-w-md space-y-6">
+          {gameState === "idle" ? (
+            <div className="glass-dark p-8 rounded-[2.5rem] space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <label className="text-xs font-black text-zinc-400 tracking-widest uppercase">Select Drop Position</label>
+                  <span className="text-amber-400 font-black text-sm">{dropX}%</span>
                 </div>
+                <input 
+                  type="range" 
+                  min="5" max="95" 
+                  value={dropX} 
+                  onChange={(e) => setDropX(Number(e.target.value))} 
+                  className="w-full h-2 bg-zinc-800 rounded-full appearance-none cursor-pointer accent-rose-600 border border-zinc-700 hover:border-zinc-500 transition-colors" 
+                />
+                <p className="text-[10px] text-rose-400/70 font-bold bg-rose-500/5 p-3 rounded-xl border border-rose-500/10">
+                  ※警告: 日本のIT商流において、どの位置から落としても構造的に搾取は避けられません。
+                </p>
               </div>
-              <button onClick={handleDrop} className="w-full bg-rose-600 hover:bg-rose-500 text-white py-5 rounded-xl text-xl font-black shadow-[0_10px_20px_rgba(225,29,72,0.3)] transition-all active:scale-95 flex items-center justify-center gap-3 group">
-                <ArrowDownToLine size={24} className="group-hover:translate-y-1 transition-transform" />案件を受注する
+              
+              <button 
+                onClick={handleDrop} 
+                className="w-full relative group overflow-hidden bg-rose-600 hover:bg-rose-500 text-white py-6 rounded-2xl text-2xl font-black transition-all active:scale-[0.98] shadow-[0_20px_40px_-10px_rgba(225,29,72,0.5)]"
+              >
+                <div className="absolute inset-0 bg-gradient-to-tr from-rose-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative flex items-center justify-center gap-3">
+                  <ArrowDownToLine size={28} className="group-hover:translate-y-1 transition-transform" />
+                  案件を受注する
+                </div>
               </button>
+            </div>
+          ) : (
+            <div className="glass-dark p-8 rounded-[2.5rem] flex flex-col items-center justify-center space-y-4 border-dashed border-zinc-700 opacity-60">
+              <div className="w-12 h-12 rounded-full border-4 border-cyan-500/30 border-t-cyan-500 animate-spin" />
+              <p className="text-xs font-black text-cyan-400 tracking-widest uppercase">Simulation in Progress</p>
+              <p className="text-[10px] text-zinc-500 font-bold text-center">業者がピンハネ中...</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* 結果表示 */}
+      {/* 最終結果（ドラマチックなフルスクリーンモーダル） */}
       {gameState === "finished" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-500">
-          <div className="bg-zinc-900 border-2 border-zinc-700 p-8 rounded-3xl max-w-md w-full shadow-2xl space-y-8 animate-in zoom-in-95 duration-500">
-            <div className="text-center space-y-2">
-              <h2 className="text-4xl font-black text-rose-500 text-shadow-glow">FINISH...</h2>
-              <p className="text-zinc-400 font-bold">{INITIAL_MONEY.toLocaleString()}円の案件の末路</p>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-in fade-in duration-700">
+          <div className="w-full max-w-xl space-y-10 animate-in zoom-in-95 slide-in-from-bottom-10 duration-700">
+            <div className="text-center space-y-4">
+              <div className="inline-block px-4 py-1 rounded-full bg-rose-500 text-white text-[10px] font-black tracking-[0.3em] uppercase shadow-[0_0_20px_rgba(225,29,72,0.5)]">
+                Simulation Finished
+              </div>
+              <h2 className="text-6xl font-black text-white font-display uppercase tracking-tighter">
+                The <span className="text-rose-500">End</span> of Profit
+              </h2>
+              <p className="text-zinc-500 font-bold tracking-widest uppercase text-xs">{(INITIAL_MONEY/10000).toLocaleString()}万円の案件の成れの果て</p>
             </div>
-            <div className="space-y-4 bg-black/50 p-6 rounded-2xl border border-zinc-800 text-center">
-              <p className="text-sm font-bold text-zinc-500 mb-1">最終的なあなたの手取り額</p>
-              <p className="text-5xl font-black text-amber-400">{money.toLocaleString()}<span className="text-2xl">円</span></p>
-              <p className="text-rose-400 font-bold text-sm italic mt-4 whitespace-pre-wrap">{evaluationComment}</p>
+
+            <div className="glass-dark p-10 rounded-[3rem] border-2 border-zinc-700 relative overflow-hidden text-center space-y-8">
+              <div className="absolute inset-0 bg-gradient-to-b from-rose-500/5 to-transparent pointer-events-none" />
+              
+              <div className="space-y-2 relative">
+                <p className="text-zinc-500 text-[10px] font-black tracking-[0.4em] uppercase">Your Final Bank Account</p>
+                <p className="text-7xl font-black text-amber-400 neon-text-amber font-display tracking-tight">
+                  {money.toLocaleString()}<span className="text-3xl ml-2 opacity-70">円</span>
+                </p>
+              </div>
+
+              <div className="relative inline-block px-8 py-4 bg-zinc-800/50 rounded-2xl border border-zinc-700 shadow-inner">
+                <p className="text-rose-400 font-black text-lg leading-relaxed italic whitespace-pre-wrap">
+                  {evaluationComment}
+                </p>
+              </div>
             </div>
-            <div className="space-y-4">
-              <ShareButton deductionRate={deductionRate} finalAmount={money} evaluationMessage={evaluationComment} />
-              <button onClick={resetGame} className="w-full flex items-center justify-center gap-2 text-zinc-400 hover:text-white py-3 rounded-xl font-bold transition-colors bg-zinc-800 border-zinc-700">
-                <RefreshCw size={20} />もう一度現実を見る
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <ShareButton deductionRate={deductionRate} finalAmount={money} evaluationMessage={evaluationComment} />
+              </div>
+              <button 
+                onClick={resetGame} 
+                className="flex-[0.6] flex items-center justify-center gap-3 text-zinc-400 hover:text-white py-5 rounded-2xl font-black transition-all bg-zinc-900 border-2 border-zinc-800 hover:border-zinc-700 group shadow-xl"
+              >
+                <RefreshCw size={22} className="group-hover:rotate-180 transition-transform duration-700" />
+                もう一度現実を見る
               </button>
             </div>
           </div>
